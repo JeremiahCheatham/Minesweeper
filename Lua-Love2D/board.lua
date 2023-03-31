@@ -33,18 +33,26 @@ function Board:reset(scale, left, top, columns, rows, mines)
     self._game_won = false
     self._first_move = true
 
-    self:generate()
+    self:generate_front()
+    self:generate_back()
 end
 
-function Board:generate()
-    self._back = {}
+function Board:generate_front()
     self._front = {}
     for row = 1, self._rows do
-        self._back[row] = {}
         self._front[row] = {}
         for column = 1, self._columns do
-            self._back[row][column] = 10
             self._front[row][column] = 9
+        end
+    end
+end
+
+function Board:generate_back()
+    self._back = {}
+    for row = 1, self._rows do
+        self._back[row] = {}
+        for column = 1, self._columns do
+            self._back[row][column] = 10
         end
     end
     local i = 0
@@ -106,7 +114,7 @@ function Board:tileReleased(x, y)
             elseif self._back[r][c] == 14 then
                 if self._first_move == true then
                     while self._back[r][c] == 14 do
-                        self:generate()
+                        self:generate_back()
                     end
                     self:tileReleased(x, y)
                 else
@@ -117,7 +125,7 @@ function Board:tileReleased(x, y)
         end
         if self._remaining_moves <= 0 then
             if self._first_move == true then
-                self:generate()
+                self:generate_back()
                 self:tileReleased(x, y)
             else
                 self:won()
