@@ -11,6 +11,7 @@ Right Click on tile to mark.\
 Escape - Quits
 
 # Ports
+[C - SDL2](C-SDL2)\
 [Lua - Love2D](Lua-Love2D)
 
 # Screenshots
