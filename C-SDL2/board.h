@@ -6,7 +6,7 @@
 struct Board {
     SDL_Renderer *renderer;
     SDL_Texture **image_array;
-    unsigned int image_length;
+    int image_length;
     SDL_Rect image_rect;
     unsigned **front_array;
     unsigned **back_array;
@@ -18,6 +18,9 @@ struct Board {
     bool pressed;
     struct Node *check_head;
     unsigned theme;
+    bool first_turn;
+    int scale;
+    int mines;
 };
 
 struct Node {
@@ -40,6 +43,7 @@ bool board_push_check(struct Board *b, int row, int column);
 void board_remove_check(struct Board *b, struct Node *node);
 void board_free_check(struct Board *b);
 void board_run_check(struct Board *b);
+void board_reveal(struct Board *b); 
 bool board_game_won(struct Board *b);
 bool board_draw(struct Board *b); 
 

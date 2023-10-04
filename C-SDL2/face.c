@@ -28,14 +28,7 @@ bool face_new(struct Face **face, SDL_Renderer *renderer) {
 
 void face_free(struct Face **face) {
     if (*face) {
-        if ((*face)->image_array) {
-            for (unsigned int i = 0; i < (*face)->image_length; i++) {
-                if ((*face)->image_array[i]) {
-                    SDL_DestroyTexture((*face)->image_array[i]);
-                }
-            }
-            free((*face)->image_array);
-        }
+        load_media_free(&(*face)->image_array, (*face)->image_length);
 
         (*face)->renderer = NULL;
         free(*face);

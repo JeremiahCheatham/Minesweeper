@@ -26,14 +26,7 @@ bool board_new(struct Board **board, SDL_Renderer *renderer) {
 
 void board_free(struct Board **board) {
     if (*board) {
-        if ((*board)->image_array) {
-            for (unsigned int i = 0; i < (*board)->image_length; i++) {
-                if ((*board)->image_array[i]) {
-                    SDL_DestroyTexture((*board)->image_array[i]);
-                }
-            }
-            free((*board)->image_array);
-        }
+        load_media_free(&(*board)->image_array, (*board)->image_length);
 
         board_free_arrays(*board);
         board_free_check(*board);
@@ -104,6 +97,10 @@ void board_set_theme(struct Board *b, unsigned theme) {
 }
 
 bool board_reset(struct Board *b, unsigned rows, unsigned columns, int scale, int mines) {
+    b->scale = scale;
+    b->mines = mines;
+    b->first_turn = true;
+
     board_free_arrays(b);
 
     if (board_calloc_arrays(b, rows, columns)) {
@@ -201,17 +198,33 @@ bool board_mouse_up(struct Board *b, int x, int y, Uint8 button, int *game_statu
 
     if (button == SDL_BUTTON_LEFT) {
         if (b->front_array[row][column] == 9) {
-            if (b->back_array[row][column] == 13) {
-                *game_status = -1;
+            while (true) {
+                if (b->back_array[row][column] == 13) {
+                    *game_status = -1;
+                    b->front_array[row][column] = 14;
+                } else {
+                    b->front_array[row][column] = b->back_array[row][column];
+                    if (b->front_array[row][column] == 0) {
+                        if (board_push_check(b, row, column)) return true;
+                        board_run_check(b);
+                    }
+                    if (board_game_won(b)) {
+                        *game_status = 1;
+                    }
+                }
+                if (b->first_turn && *game_status != 0) {
+                    board_reset(b, b->rows, b->columns, b->scale, b->mines);
+                    *game_status = 0;
+                } else {
+                    break;
+                }
             }
-            b->front_array[row][column] = b->back_array[row][column];
-            if (b->front_array[row][column] == 0) {
-                if (board_push_check(b, row, column)) return true;
-                board_run_check(b);
+            b->first_turn = false;
+
+            if (*game_status != 0) {
+                board_reveal(b);
             }
-            if (board_game_won(b)) {
-                *game_status = 1;
-            }
+            
             return false;
         }
     }
@@ -288,6 +301,19 @@ void board_run_check(struct Board *b) {
             }
         }
         board_remove_check(b, node);
+    }
+}
+
+void board_reveal(struct Board *b) {
+    for (unsigned row = 0; row < b->rows; row++) {
+        for (unsigned column = 0; column < b->columns; column++) {
+            if (b->front_array[row][column] == 9 && b->back_array[row][column] == 13) {
+                b->front_array[row][column] = 13;
+            }
+            if (b->front_array[row][column] == 10 && b->back_array[row][column] != 13) {
+                b->front_array[row][column] = 15;
+            }
+        }
     }
 }
 

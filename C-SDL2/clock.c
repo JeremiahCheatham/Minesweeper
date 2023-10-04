@@ -36,23 +36,8 @@ bool clock_new(struct Clock **clock, SDL_Renderer *renderer) {
 
 void clock_free(struct Clock **clock) {
     if (*clock) {
-        if ((*clock)->background_array) {
-            for (unsigned int i = 0; i < (*clock)->background_length; i++) {
-                if ((*clock)->background_array[i]) {
-                    SDL_DestroyTexture((*clock)->background_array[i]);
-                }
-            }
-            free((*clock)->background_array);
-        }
-
-        if ((*clock)->digits_array) {
-            for (unsigned int i = 0; i < (*clock)->digits_length; i++) {
-                if ((*clock)->digits_array[i]) {
-                    SDL_DestroyTexture((*clock)->digits_array[i]);
-                }
-            }
-            free((*clock)->digits_array);
-        }
+        load_media_free(&(*clock)->background_array, (*clock)->background_length);
+        load_media_free(&(*clock)->digits_array, (*clock)->digits_length);
 
         (*clock)->renderer = NULL;
         free(*clock);

@@ -6,7 +6,7 @@
 struct Border {
     SDL_Renderer *renderer;
     SDL_Texture **image_array;
-    unsigned int image_length;
+    int image_length;
     SDL_Rect rect;
     int rows;
     int columns;

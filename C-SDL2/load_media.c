@@ -3,11 +3,11 @@
 bool load_media_sheet(
     SDL_Renderer *renderer,
     SDL_Texture ***image_array,
-    unsigned int *image_length,
+    int *image_length,
     SDL_Rect *rect,
     const char* file_path,
-    unsigned height,
-    unsigned width)
+    int height,
+    int width)
 {
     if (*image_array) {
         fprintf(stderr, "Error image array is not NULL!\n");
@@ -19,30 +19,30 @@ bool load_media_sheet(
         return true;
     }
 
-    unsigned max_rows = (unsigned int)source_surf->h / height;
-    unsigned max_columns = (unsigned int)source_surf->w / width;
+    int max_rows = source_surf->h / height;
+    int max_columns = source_surf->w / width;
 
-    *image_array = calloc(1, sizeof(SDL_Texture *) * max_rows * max_columns);
+    *image_array = calloc(1, sizeof(SDL_Texture *) * (unsigned)(max_rows * max_columns));
     if (!*image_array) {
         fprintf(stderr, "Error in calloc of image array.\n");
         SDL_FreeSurface(source_surf);
         return true;
     }
 
-    SDL_Surface *target_surf = SDL_CreateRGBSurfaceWithFormat(0, (int)width, (int)height, 32, SDL_PIXELFORMAT_ARGB8888);
+    SDL_Surface *target_surf = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_ARGB8888);
     if (!target_surf) {
         fprintf(stderr, "Error creating the target surface: %s\n", SDL_GetError());
         SDL_FreeSurface(source_surf);
         return true;
     }
 
-    (*rect).w = (int)width;
-    (*rect).h = (int)height;
+    (*rect).w = width;
+    (*rect).h = height;
 
     *image_length = 0;
-    for (unsigned int row = 0; row < max_rows; row++) {
+    for (int row = 0; row < max_rows; row++) {
         (*rect).y = (int)(row * height);
-        for (unsigned int column = 0; column < max_columns; column++) {
+        for (int column = 0; column < max_columns; column++) {
             (*rect).x = (int)(column * width);
 
             if (SDL_FillRect(target_surf, NULL, SDL_MapRGBA(target_surf->format, 0, 0, 0, 0))) {
@@ -73,5 +73,16 @@ bool load_media_sheet(
     SDL_FreeSurface(target_surf);
 
     return false;
+}
+
+void load_media_free(SDL_Texture ***image_array, int image_length) {
+    if (*image_array) {
+        for (int i = 0; i < image_length; i++) {
+            if ((*image_array)[i]) {
+                SDL_DestroyTexture((*image_array)[i]);
+            }
+        }
+        free(*image_array);
+    }
 }
 

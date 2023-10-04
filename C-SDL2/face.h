@@ -6,7 +6,7 @@
 struct Face {
     SDL_Renderer *renderer;
     SDL_Texture **image_array;
-    unsigned image_length;
+    int image_length;
     SDL_Rect image_rect;
     int image_index;
     int theme;

@@ -6,10 +6,10 @@
 struct Clock {
     SDL_Renderer *renderer;
     SDL_Texture **background_array;
-    unsigned background_length;
+    int background_length;
     SDL_Rect background_rect;
     SDL_Texture **digits_array;
-    unsigned int digits_length;
+    int digits_length;
     SDL_Rect digits_rect;
     int seconds;
     Uint32 last_time;

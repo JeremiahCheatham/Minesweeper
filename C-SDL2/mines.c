@@ -1,4 +1,3 @@
-
 #include "mines.h"
 #include "load_media.h"
 
@@ -39,24 +38,9 @@ bool mines_new(struct Mines **mines, SDL_Renderer *renderer) {
 
 void mines_free(struct Mines **mines) {
     if (*mines) {
-        if ((*mines)->background_array) {
-            for (unsigned int i = 0; i < (*mines)->background_length; i++) {
-                if ((*mines)->background_array[i]) {
-                    SDL_DestroyTexture((*mines)->background_array[i]);
-                }
-            }
-            free((*mines)->background_array);
-        }
-
-        if ((*mines)->digits_array) {
-            for (unsigned int i = 0; i < (*mines)->digits_length; i++) {
-                if ((*mines)->digits_array[i]) {
-                    SDL_DestroyTexture((*mines)->digits_array[i]);
-                }
-            }
-            free((*mines)->digits_array);
-        }
-
+        load_media_free(&(*mines)->background_array, (*mines)->background_length);
+        load_media_free(&(*mines)->digits_array, (*mines)->digits_length);
+        
         (*mines)->renderer = NULL;
         free(*mines);
         *mines = NULL;

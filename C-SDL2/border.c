@@ -26,14 +26,7 @@ bool border_new(struct Border **border, SDL_Renderer *renderer) {
 
 void border_free(struct Border **border) {
     if (*border) {
-        if ((*border)->image_array) {
-            for (unsigned int i = 0; i < (*border)->image_length; i++) {
-                if ((*border)->image_array[i]) {
-                    SDL_DestroyTexture((*border)->image_array[i]);
-                }
-            }
-            free((*border)->image_array);
-        }
+        load_media_free(&(*border)->image_array, (*border)->image_length);
 
         (*border)->renderer = NULL;
         free(*border);
