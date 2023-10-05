@@ -11,7 +11,7 @@ A, S, D, F - Change difficulty from Easy to Very Hard\
 Left Click on tile to uncover.\
 Left Clock on Face to reset.\
 Right Click on tile to mark.\
-P - Enable showFPS.\
+P - Enablea showFPS.\
 Escape - Quits
 
 # Ports
